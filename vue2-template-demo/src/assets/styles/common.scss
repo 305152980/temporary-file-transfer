@@ -1,0 +1,64 @@
+// 常用样式重置表。
+* {
+  padding: 0;
+  margin: 0;
+}
+em,
+i {
+  font-style: normal; // 斜体字不再倾斜。
+}
+li {
+  list-style: none; // 去掉 li 元素前面的点。
+}
+a {
+  color: #666;
+  text-decoration: none; // 超链接去掉下划线。
+}
+a:hover {
+  color: #c81623;
+}
+img {
+  border: 0; // 兼容低版本浏览器。
+  vertical-align: middle; // 图片垂直方向上中线对齐。
+}
+input {
+  border: 0; // 去掉 input 框本身自带的边框。
+  outline: none; // 去掉 input 框激活时的蓝色边框。
+}
+button {
+  cursor: pointer; // 鼠标覆盖有小手。
+}
+body {
+  font: 12px/1.5 'Microsoft YaHei';
+}
+
+// 字体设置。
+@font-face {
+  font-family: Emoji;
+  src: local('Apple Color Emojiji'), local('Segoe UI Emoji'), local('Segoe UI Symbol'),
+    local('Noto Color Emoji');
+  unicode-range: U+1F000-1F644, U+203C-3299;
+}
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif;
+}
+// 衬线字体。
+.font-serif {
+  font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+// 等宽字体。
+.font-mono {
+  font-family: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+// 自定义浏览器滚动条样式。
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  border-radius: 2.5px;
+  background-color: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 2.5px;
+  background-color: #8a8a8a;
+}

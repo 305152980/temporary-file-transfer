@@ -1,0 +1,6 @@
+@import '~@/assets/styles/common.scss';
+@import '~@/assets/styles/global.scss';
+@import url(big.scss) only screen and (min-width: 1200px); // view > 1200px
+@import url(medium.scss) only screen and (max-width: 1200px); // 992px < view <= 1200px
+@import url(small.scss) only screen and (max-width: 992px); // 768px < view <= 992px
+@import url(small-x.scss) only screen and (max-width: 768px); // view <= 768px
