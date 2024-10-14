@@ -9,7 +9,7 @@ const instance = axios.create({
   // send cookies when cross-domain requests
   // withCredentials: true,
   // 请求的超时时间。
-  timeout: 5000
+  timeout: 10000
 })
 
 // 请求拦截器。
@@ -17,6 +17,9 @@ instance.interceptors.request.use(
   async config => {
     if (store.getters.token) {
       config.headers.Authorization = `Bearer ${store.getters.token}`
+    }
+    if (store.getters.language) {
+      config.headers['Accept-Language'] = `Bearer ${store.getters.language}`
     }
     return config
   },
@@ -29,6 +32,11 @@ instance.interceptors.request.use(
 // 响应拦截器。
 instance.interceptors.response.use(
   response => {
+    // 二进制文件数据直接返回。
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+      return response.data
+    }
+
     const { code, message, data } = response.data
 
     // if the custom code is not 20000, it is judged as an error.
@@ -46,10 +54,9 @@ instance.interceptors.response.use(
             cancelButtonText: '取消',
             type: 'warning'
           }
-        ).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+        ).then(async () => {
+          await store.dispatch('user/resetToken')
+          location.reload()
         })
       } else {
         Message.error(message)
@@ -64,19 +71,23 @@ instance.interceptors.response.use(
 )
 
 // 请求工具函数。
+// request: Function
 export default (
   url,
-  method,
+  method, // 'GET' | 'POST' | 'PUT' | 'DELETE'
+  transMode, // 'url' | 'body'
   submitData = {},
-  headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json'
+  otherPropSet = {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    }
   }
 ) => {
   return instance({
     url,
     method,
-    [method.toLowerCase() === 'get' ? 'params' : 'data']: submitData,
-    headers
+    [transMode === 'url' ? 'params' : 'data']: submitData,
+    ...otherPropSet
   })
 }

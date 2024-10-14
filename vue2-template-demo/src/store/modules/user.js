@@ -1,9 +1,9 @@
 import { login, logout, getInfo } from '@/apis/user/index.js'
-import { getToken, setToken, removeToken } from '@/utils/auth.js'
+import { getToken, setToken, removeToken, removeLanguage } from '@/utils/auth.js'
 import { resetRouter } from '@/router/index.js'
 
 const state = {
-  token: getToken(),
+  token: getToken(), // 初始值为 null。
   name: '',
   avatar: '',
   introduction: '',
@@ -64,7 +64,9 @@ const actions = {
     await logout(state.token)
     commit('SET_TOKEN', '')
     commit('SET_ROLES', [])
+    commit('language/SET_LANGUAGE', process.env.VUE_APP_Language || null, { root: true })
     removeToken()
+    removeLanguage()
     resetRouter()
   },
 

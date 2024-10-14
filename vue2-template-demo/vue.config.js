@@ -35,6 +35,8 @@ module.exports = {
   transpileDependencies: false,
   productionSourceMap: false,
   devServer: {
+    // URL 的配置。
+    host: '0.0.0.0',
     // 配置开发服务器的端口号。
     port: port,
     // 在启动开发服务器后自动打开浏览器。
@@ -54,6 +56,8 @@ module.exports = {
         }
       }
     }
+    // 在发送请求时，会先在 before 指定的函数中进行处理；如果 before 中没有对应的接口处理逻辑，则会请求服务器的真实接口。
+    // before: require('./src/mock/index.js')
   },
   configureWebpack: {
     resolve: {

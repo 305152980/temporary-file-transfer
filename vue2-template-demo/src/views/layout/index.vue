@@ -9,7 +9,7 @@
           <NavBar />
         </el-header>
         <el-main>
-          <router-view />
+          <RouterView />
         </el-main>
       </el-container>
     </el-container>

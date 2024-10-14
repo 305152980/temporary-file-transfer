@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 // 导入 CSS 样式重置库。
-import 'normalize.css/normalize.css'
+import 'normalize.css'
 
 // 导入自定义公共样式。
 import '@/assets/styles/index.scss'
