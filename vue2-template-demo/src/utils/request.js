@@ -2,10 +2,12 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store/index.js'
 
+const vueConfig = require(`${process.env.BASE_URL}vue-config.js`)
+
 // 创建一个 Axios 实例。
 const instance = axios.create({
   // npm run dev ==> /dev-api   npm run build ==> /prod-api
-  baseURL: process.env.VUE_APP_BASE_URL,
+  baseURL: vueConfig.VUE_APP_BASE_API || process.env.VUE_APP_BASE_URL,
   // send cookies when cross-domain requests
   // withCredentials: true,
   // 请求的超时时间。

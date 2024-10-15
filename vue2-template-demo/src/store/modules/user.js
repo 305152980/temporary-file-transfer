@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/apis/user/index.js'
+import { loginPort, logoutPort, getInfoPort } from '@/apis/user/index.js'
 import { getToken, setToken, removeToken, removeLanguage } from '@/utils/auth.js'
 import { resetRouter } from '@/router/index.js'
 
@@ -32,14 +32,14 @@ const actions = {
   // user login
   async login({ commit }, userInfo) {
     const { username, password } = userInfo
-    const { data } = await login({ username: username.trim(), password: password })
+    const { data } = await loginPort({ username: username.trim(), password: password })
     commit('SET_TOKEN', data.token)
     setToken(data.token)
   },
 
   // get user info
   async getInfo({ commit, state }) {
-    const { data } = await getInfo(state.token)
+    const { data } = await getInfoPort(state.token)
 
     if (!data) {
       throw new Error('Verification failed, please Login again.')
@@ -61,7 +61,7 @@ const actions = {
 
   // user logout
   async logout({ commit, state }) {
-    await logout(state.token)
+    await logoutPort(state.token)
     commit('SET_TOKEN', '')
     commit('SET_ROLES', [])
     commit('language/SET_LANGUAGE', process.env.VUE_APP_Language || null, { root: true })
@@ -73,7 +73,6 @@ const actions = {
   // remove token
   async resetToken({ commit }) {
     commit('SET_TOKEN', '')
-    commit('SET_ROLES', [])
     removeToken()
   }
 }
