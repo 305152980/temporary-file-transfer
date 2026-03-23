@@ -1,24 +1,29 @@
 import { type Fiber } from './ReactInternalTypes'
-import { HostRoot, HostComponent } from './ReactWorkTags'
+import { HostRoot, HostComponent, HostText, Fragment } from './ReactWorkTags'
 import { isNum, isStr } from '@my-mini-react/shared/utils'
 
 export function completeWork(
   current: Fiber | null,
   workInProgress: Fiber
 ): Fiber | null {
+  const newProps = workInProgress.pendingProps
   switch (workInProgress.tag) {
     case HostRoot:
+    case Fragment:
       return null
     case HostComponent:
       // 1、创建真实 DOM 节点。
       const { type } = workInProgress
       const instance = document.createElement(type)
       // 2、初始化 DOM 节点的属性。
-      finalizeInitialChildren(instance, workInProgress.pendingProps)
+      finalizeInitialChildren(instance, newProps)
       // 3、把子 DOM 节点挂载到父 DOM 节点上。
       appendAllChildren(instance, workInProgress)
       // 4、把 DOM 节点保存在 Fiber 的 stateNode 上。
       workInProgress.stateNode = instance
+      return null
+    case HostText:
+      workInProgress.stateNode = document.createTextNode(newProps)
       return null
     // TODO
   }
@@ -43,7 +48,22 @@ function finalizeInitialChildren(domElement: HTMLElement, props: any): void {
 function appendAllChildren(parent: HTMLElement, workInProgress: Fiber): void {
   let nodeFiber = workInProgress.child
   while (nodeFiber !== null) {
-    parent.appendChild(nodeFiber.stateNode)
-    nodeFiber = nodeFiber.sibling
+    if (isHost(nodeFiber)) {
+      parent.appendChild(nodeFiber.stateNode)
+    } else if (nodeFiber.child !== null) {
+      nodeFiber = nodeFiber.child
+      continue
+    }
+    while (nodeFiber!.sibling === null) {
+      if (nodeFiber!.return === workInProgress) {
+        return
+      }
+      nodeFiber = nodeFiber!.return
+    }
+    nodeFiber = nodeFiber!.sibling
   }
+}
+
+export function isHost(fiber: Fiber): boolean {
+  return fiber.tag === HostComponent || fiber.tag === HostText
 }

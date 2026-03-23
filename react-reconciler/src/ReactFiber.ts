@@ -2,11 +2,14 @@ import { type ReactElement } from '@my-mini-react/shared/ReactTypes'
 import { type Fiber } from './ReactInternalTypes'
 import { NoFlags } from './ReactFiberFlags'
 import {
+  Fragment,
   HostComponent,
+  HostText,
   IndeterminateComponent,
   type WorkTag,
 } from './ReactWorkTags'
 import { isStr } from '@my-mini-react/shared/utils'
+import { REACT_ELEMENT_TYPE } from '@my-mini-react/shared/ReactSymbols'
 
 /**
  * 创建 Fiber 节点的核心方法
@@ -66,6 +69,8 @@ export function createFiberFromTypeAndProps(
   let fiberTag: WorkTag = IndeterminateComponent
   if (isStr(type)) {
     fiberTag = HostComponent
+  } else if (type === REACT_ELEMENT_TYPE) {
+    fiberTag = Fragment
   }
   const fiber = createFiber(fiberTag, pendingProps, key)
   fiber.elementType = type
@@ -106,4 +111,9 @@ export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
   workInProgress.sibling = current.sibling
   workInProgress.index = current.index
   return workInProgress
+}
+
+export function createFiberFromText(content: string): Fiber {
+  const fiber = createFiber(HostText, content, null)
+  return fiber
 }

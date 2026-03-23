@@ -1,5 +1,5 @@
 import { type Fiber } from './ReactInternalTypes'
-import { HostRoot, HostComponent } from './ReactWorkTags'
+import { HostRoot, HostComponent, HostText, Fragment } from './ReactWorkTags'
 import { mountChildFibers, reconcileChildFibers } from './ReactChildFiber'
 import { isStr, isNum } from '@my-mini-react/shared/utils'
 
@@ -14,6 +14,10 @@ export function beginWork(
       return updateHostRoot(current, workInProgress)
     case HostComponent:
       return updateHostComponent(current, workInProgress)
+    case HostText:
+      return updateHostText(current, workInProgress)
+    case Fragment:
+      return updateFragment(current, workInProgress)
     // TODO
   }
   throw new Error(
@@ -40,6 +44,19 @@ function updateHostComponent(
     // 如果原生标签的子节点只有一个文本节点，这个时候文本节点不会再生成对应的 Fiber 节点，而是直接作为属性保存在父 Fiber 的 memoizedProps 中。
     return null
   }
+  const nextChildren = workInProgress.pendingProps.children
+  reconcileChildren(current, workInProgress, nextChildren)
+  return workInProgress.child
+}
+
+function updateHostText(current: Fiber | null, workInProgress: Fiber): null {
+  return null
+}
+
+function updateFragment(
+  current: Fiber | null,
+  workInProgress: Fiber
+): Fiber | null {
   const nextChildren = workInProgress.pendingProps.children
   reconcileChildren(current, workInProgress, nextChildren)
   return workInProgress.child
